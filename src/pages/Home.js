@@ -4,10 +4,23 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <>
-      <h1>Signup Pages</h1>
-      <Link to="/signup">Signup using formik</Link>
+      <ul>
+        <li style={{ color: "red" }}>Signup Pages</li>
 
-      <h1>Login Pages</h1>
+        <li>
+          <Link to="/signup">Signup using formik</Link>
+        </li>
+        <li>
+          <Link to="/signupb">Signup from anil sidhu</Link>
+        </li>
+      </ul>
+
+      <ul>
+        <li style={{ color: "red" }}>Login Pages</li>
+        <li>
+          <Link to="/login">Login</Link>
+        </li>
+      </ul>
     </>
   );
 };

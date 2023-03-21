@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Formik, Form, Field } from "formik";
 import "../style.css";
-import createUser from "../function/user/User";
+import { createUser } from "../function/user/API";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
+
 // Messages
 const required = "This field is required";
 const maxLength = "Your input exceed maximum length";
+const minLength = "Your input is minimum length";
 
 // Error Component
 const errorMessage = (error) => {
@@ -17,7 +23,9 @@ const validateName = (value) => {
   let error;
   if (!value) {
     error = required;
-  } else if (value.length > 12) {
+  } else if (value.length < 4) {
+    error = minLength;
+  } else if (value.length > 20) {
     error = maxLength;
   }
   return error;
@@ -27,6 +35,8 @@ const validateEmail = (value) => {
   let error;
   if (!value) {
     error = required;
+  } else if (value.length < 4) {
+    error = minLength;
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
     error = "Invalid email address";
   }
@@ -37,6 +47,10 @@ const validateMobileNumber = (value) => {
   let error;
   if (!value) {
     error = required;
+  } else if (value.length < 10) {
+    error = minLength;
+  } else if (value.length > 10) {
+    error = maxLength;
   }
   return error;
 };
@@ -45,11 +59,15 @@ const validatePassword = (value) => {
   let error;
   if (!value) {
     error = required;
+  } else if (value.length < 4) {
+    error = minLength;
   }
   return error;
 };
 
 export default function Signup() {
+  const [status, setStatus] = useState("");
+
   return (
     <Formik
       initialValues={{
@@ -60,25 +78,27 @@ export default function Signup() {
       }}
       onSubmit={(data) => {
         //console.log(data);
-        axios({
-          method: "POST",
-          url: "https://c1inkx-3001.preview.csb.app/users/create",
-          data: data,
-        })
-          .then(function (res) {
-            console.log("hi res", res);
-            alert("Successfully signed up!");
+        createUser(data)
+          .then((res) => {
+            // console.log(res.data.errors[0].msg);
+            toast.success(res.data.errors[0].msg);
           })
-          .catch(function (res) {
-            //console.log(res);
-          });
+          .catch((err) => console.log(err));
       }}
     >
       {({ errors, touched, isValidating }) => (
         <div className="container">
+          {status.type == "success" ? (
+            <div>success create</div>
+          ) : (
+            <div>success flase</div>
+          )}
+
           <div className="col-sm-12">
             <h3>User Signup</h3>
           </div>
+          <ToastContainer />
+
           <div className="col-sm-12">
             <Form>
               <div className="form-group">
