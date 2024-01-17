@@ -1,0 +1,1 @@
+this project for react training like learn and implement and make a notes
